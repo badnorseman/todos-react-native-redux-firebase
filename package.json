@@ -9,6 +9,7 @@
     "flow": "flow"
   },
   "dependencies": {
+    "firebase": "3.3.0",
     "react": "15.3.1",
     "react-native": "0.32.0",
     "react-redux": "^4.4.2",
