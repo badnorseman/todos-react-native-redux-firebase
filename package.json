@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start"
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "mocha --opts test/mocha.opts test/**/*.spec.js",
+    "lint": "eslint -c .eslintrc.json app",
+    "flow": "flow"
   },
   "dependencies": {
     "react": "15.3.1",
