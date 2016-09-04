@@ -1,0 +1,3 @@
+rootProject.name = 'TodosReduxFirebase'
+
+include ':app'
