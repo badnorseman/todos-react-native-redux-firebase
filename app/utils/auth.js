@@ -1,4 +1,4 @@
-export const auth = (firebaseApp) => {
+export function auth(firebaseApp) {
   const auth = firebaseApp.auth()
   return auth.signInAnonymously()
     .then(res => res)

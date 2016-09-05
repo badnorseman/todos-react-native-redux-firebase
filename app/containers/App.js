@@ -30,15 +30,17 @@ export default class App extends Component {
     auth(firebaseApp)
       .then(res => {
         console.log('auth', res)
+        console.log('user', res.currentUser)
         console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
         let ref = firebaseApp.database().ref()
         ref.once('value')
-          .then((snapshot) => {
-            console.log('data exists', snapshot.exists())
-            const key = snapshot.key
-            const childKey = snapshot.child
-            console.log('data key', key)
-            console.log('data childKey', childKey)
+          .then(snapshot => {
+            if (snapshot.exists()) {
+              const key = snapshot.key
+              const childKey = snapshot.child
+              console.log('data key', key)
+              console.log('data childKey', childKey)
+            }
           })
           .catch(err => {
             throw new Error(err)

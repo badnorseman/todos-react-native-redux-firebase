@@ -1,4 +1,4 @@
-export const getDataSource = data => {
+export function getDataSource(data) {
   const numberOfSections = data.length
   let dataBlob = {}
   let sectionIDs = []

@@ -25,7 +25,7 @@ const cumulateSortedTodos = (sortedTodos: [], id: number, name: string, todos: [
   }
 }
 
-export const sortTodos = (todos: []) => {
+export function sortTodos(todos: []) {
   const numberOfTodos = todos.length
   let sortedTodos = []
   let activeTodos = []
