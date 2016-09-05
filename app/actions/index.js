@@ -1,5 +1,5 @@
 import * as actionTypes from '../constants/actionTypes'
-import { makeAction } from '../utils/makeAction'
+import { makeActionCreator } from '../utils/makeActionCreator'
 
 let nextTodoId = 0
 export const addTodo = text => {
@@ -10,5 +10,5 @@ export const addTodo = text => {
   }
 }
 
-export const toggleTodo = makeAction(actionTypes.TOGGLE_TODO, 'id')
-export const setVisibilityFilter = makeAction(actionTypes.SET_VISIBILITY_FILTER, 'filter')
+export const toggleTodo = makeActionCreator(actionTypes.TOGGLE_TODO, 'id')
+export const setVisibilityFilter = makeActionCreator(actionTypes.SET_VISIBILITY_FILTER, 'filter')

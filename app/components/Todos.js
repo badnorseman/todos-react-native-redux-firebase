@@ -1,4 +1,7 @@
-import React, { Component, PropTypes } from 'react'
+import React, {
+  Component,
+  PropTypes
+} from 'react'
 import {
   Dimensions,
   Keyboard,
