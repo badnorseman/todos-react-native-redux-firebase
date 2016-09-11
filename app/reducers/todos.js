@@ -15,6 +15,9 @@ const todoHandlers = {
 const todo = makeReducer({}, todoHandlers)
 
 const todosHandlers = {
+  [actionTypes.READ_TODOS](state: [], action: {}) {
+    return action.payload
+  },
   [actionTypes.ADD_TODO](state: [], action: { id: number, text: string }) {
     return [ ...state, todo(undefined, action) ]
   },
