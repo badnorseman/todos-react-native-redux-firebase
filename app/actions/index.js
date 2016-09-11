@@ -4,13 +4,6 @@ import { makeActionCreator } from '../utils/makeActionCreator'
 
 const Todos = firebaseApp.database().ref()
 
-export function addTodo(text) {
-  return dispatch => Todos.push({
-    text,
-    completed: false
-  })
-}
-
 export function readTodos() {
   return dispatch => {
     Todos.on('value', (snapshot) => {
@@ -30,15 +23,27 @@ export function readTodos() {
   }
 }
 
-export function deleteTodo(id) {
-  Todos.child(id).remove()
-  // return dispatch => {
-  //   dispatch({
-  //     type: actionTypes.DELETE_TODO,
-  //     payload: id
-  //   })
-  // }
+export function addTodo(text) {
+  return dispatch => {
+    Todos.push({
+      text,
+      completed: false
+    })
+  }
 }
 
-export const toggleTodo = makeActionCreator(actionTypes.TOGGLE_TODO, 'id')
+export function toggleTodo(todo) {
+  return dispatch => {
+    Todos.child(todo.id).update({
+      completed: !todo.completed
+    })
+  }
+}
+
+export function removeTodo(id) {
+  return dispatch => {
+    Todos.child(id).remove()
+  }
+}
+
 export const setVisibilityFilter = makeActionCreator(actionTypes.SET_VISIBILITY_FILTER, 'filter')

@@ -42,8 +42,7 @@ export default class TodoList extends Component {
     }
   }
   componentDidMount() {
-    this.props.readTodos() // Move read outside component
-    // this.getData(this.props.todos)
+    this.props.readTodos()
   }
   componentWillReceiveProps(nextProps) {
     this.getData(nextProps.todos)
@@ -89,7 +88,7 @@ export default class TodoList extends Component {
     )
   }
   onPressRow(rowData: {}) {
-    this.props.toggleTodo(rowData.id)
+    this.props.toggleTodo(rowData)
   }
 }
 
