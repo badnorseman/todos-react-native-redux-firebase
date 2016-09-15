@@ -6,7 +6,7 @@ const Todo = firebaseApp.database().ref()
 
 export function fetchTodos() {
   return dispatch => {
-    Todo.on('value', function (snapshot) {
+    Todo.orderByChild('text').on('value', function (snapshot) {
       let todos = []
       snapshot.forEach((child) => {
         todos.push({
@@ -16,12 +16,12 @@ export function fetchTodos() {
         })
       })
       dispatch({
-        type: actionTypes.FETCH_TODOS_SUCCESS,
+        type: actionTypes.TODOS_SUCCESS,
         todos
       })
     }, function (error) {
       dispatch({
-        type: actionTypes.FETCH_TODOS_FAILURE,
+        type: actionTypes.TODOS_FAILURE,
         error
       })
     })
@@ -34,10 +34,11 @@ export function addTodo(text) {
     Todo.push({
       text,
       completed: false
-    }).then(function (result) {
-      console.log('addTodo result', result)
-    }, function (error) {
-      console.error('addTodo error', error)
+    }).catch(error => {
+      dispatch({
+        type: actionTypes.TODOS_FAILURE,
+        error
+      })
     })
   }
 }
@@ -46,31 +47,36 @@ export function toggleTodo(todo) {
   return dispatch => {
     Todo.child(todo.id).update({
       completed: !todo.completed
-    }).then(function (result) {
-      console.log('toggleTodo result', result)
-    }, function (error) {
-      console.error('toggleTodo error', error)
+    }).catch(error => {
+      dispatch({
+        type: actionTypes.TODOS_FAILURE,
+        error
+      })
     })
   }
 }
 
 export function deleteTodo(id) {
   return dispatch => {
-    Todo.child(id).remove().then(function (result) {
-      console.log('deleteTodo result', result)
-    }, function (error) {
-      console.error('deleteTodo error', error)
+    Todo.child(id).remove().catch(error => {
+      dispatch({
+        type: actionTypes.TODOS_FAILURE,
+        error
+      })
     })
   }
 }
 
 function authenticate() {
-  const auth = firebaseApp.auth()
-  return auth.signInAnonymously()
-    .then(res => res)
-    .catch(err => {
-      throw new Error(err)
+  return dispatch => {
+    const auth = firebaseApp.auth()
+    auth.signInAnonymously().catch(error => {
+      dispatch({
+        type: actionTypes.TODOS_FAILURE,
+        error
+      })
     })
+  }
 }
 
 export const setVisibilityFilter = makeActionCreator(actionTypes.SET_VISIBILITY_FILTER, 'filter')
