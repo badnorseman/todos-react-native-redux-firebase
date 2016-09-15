@@ -12,20 +12,17 @@ import VisibleTodoList from '../containers/VisibleTodoList'
 import withKeyboard from '../containers/withKeyboard'
 import paddingTop from '../constants/paddingTop'
 
-class Todos extends Component {
-  static propTypes = {
-    navigator: PropTypes.object.isRequired
-  };
-  render() {
-    const { keyboardSpace, navigator } = this.props
-    return (
-      <View style={[ styles.container, { paddingTop }, { height: keyboardSpace } ]}>
-        <FilterButton />
-        <VisibleTodoList navigator={navigator} />
-        <AddTodo />
-      </View>
-    )
-  }
+function Todos({
+  sceneHeight,
+  navigator
+}) {
+  return (
+    <View style={[ styles.container, { paddingTop }, { height: sceneHeight } ]}>
+      <FilterButton />
+      <VisibleTodoList navigator={navigator} />
+      <AddTodo />
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({

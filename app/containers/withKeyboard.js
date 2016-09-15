@@ -7,14 +7,14 @@ import {
 export default function withKeyboard(Component) {
   return class WithKeyboard extends React.Component {
     componentWillMount() {
-      this.setState({ keyboardSpace: Dimensions.get('window').height })
+      this.setState({ sceneHeight: Dimensions.get('window').height })
     }
     componentDidMount() {
       Keyboard.addListener('keyboardWillShow', (ev) => {
-        this.setState({ keyboardSpace: ev.endCoordinates.screenY })
+        this.setState({ sceneHeight: ev.endCoordinates.screenY })
       })
       Keyboard.addListener('keyboardWillHide', (ev) => {
-        this.setState({ keyboardSpace: ev.endCoordinates.screenY })
+        this.setState({ sceneHeight: ev.endCoordinates.screenY })
       })
     }
     componentWillUnmount() {
@@ -23,7 +23,7 @@ export default function withKeyboard(Component) {
     }
     render() {
       return (
-        <Component {...this.props} keyboardSpace={this.state.keyboardSpace } />
+        <Component {...this.props} sceneHeight={this.state.sceneHeight } />
       )
     }
   }
