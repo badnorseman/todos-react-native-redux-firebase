@@ -1,7 +1,7 @@
 // @flow
 import * as actionTypes from '../constants/actionTypes'
 import * as visibilityFilters from '../constants/visibilityFilters'
-import { makeReducer } from '../utils/makeReducer'
+import { createReducer } from '../utils/createReducer'
 
 const visibilityFilterHandler = {
   [actionTypes.SET_VISIBILITY_FILTER](state: string, action: { filter: string }) {
@@ -9,6 +9,6 @@ const visibilityFilterHandler = {
   }
 }
 
-const visibilityFilter = makeReducer(visibilityFilters.SHOW_ALL, visibilityFilterHandler)
+const visibilityFilter = createReducer(visibilityFilters.SHOW_ALL, visibilityFilterHandler)
 
 export default visibilityFilter

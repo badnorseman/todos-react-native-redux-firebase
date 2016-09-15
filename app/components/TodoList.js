@@ -16,7 +16,7 @@ export default class TodoList extends Component {
   static propTypes = {
     navigator: PropTypes.object.isRequired,
     todos: PropTypes.array.isRequired,
-    readTodos: PropTypes.func.isRequired,
+    fetchTodos: PropTypes.func.isRequired,
     toggleTodo: PropTypes.func.isRequired
   };
   constructor(props) {
@@ -42,7 +42,7 @@ export default class TodoList extends Component {
     }
   }
   componentDidMount() {
-    this.props.readTodos()
+    this.props.fetchTodos()
   }
   componentWillReceiveProps(nextProps) {
     this.getData(nextProps.todos)

@@ -1,3 +1,4 @@
+// @flow
 export function makeActionCreator(type, ...argNames) {
   return function (...args) {
     let action = { type }
@@ -7,9 +8,3 @@ export function makeActionCreator(type, ...argNames) {
     return action
   }
 }
-
-// @flow
-// import _ from 'lodash/fp';
-// export const makeActionCreator =
-//   (type: string, ...argNames: Array<string>) =>
-//     (...args: Array<any>) => _.merge({ type }, _.zipObject(argNames, args));

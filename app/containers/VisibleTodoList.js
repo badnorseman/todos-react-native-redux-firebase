@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import {
-  readTodos,
+  fetchTodos,
   toggleTodo
 } from '../actions'
 import * as visibilityFilters from '../constants/visibilityFilters'
@@ -24,7 +24,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    readTodos: () => { dispatch(readTodos()) },
+    fetchTodos: () => { dispatch(fetchTodos()) },
     toggleTodo: (todo) => { dispatch(toggleTodo(todo)) }
   }
 }

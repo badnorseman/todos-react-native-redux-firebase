@@ -1,31 +1,16 @@
 // @flow
 import * as actionTypes from '../constants/actionTypes'
-import { makeReducer } from '../utils/makeReducer'
-
-const todoHandlers = {
-  [actionTypes.ADD_TODO](state: {}, action: { id: number, text: string }) {
-    return { id: action.id, text: action.text, completed: false }
-  },
-  [actionTypes.TOGGLE_TODO](state: {}, action: { id: number }) {
-    if (state.id !== action.id) { return state }
-    return Object.assign({}, state, { completed: !state.completed })
-  }
-}
-
-const todo = makeReducer({}, todoHandlers)
+import { createReducer } from '../utils/createReducer'
 
 const todosHandlers = {
-  [actionTypes.READ_TODOS](state: [], action: {}) {
-    return action.payload
+  [actionTypes.FETCH_TODOS_SUCCESS](state: {}, action: {}) {
+    return action.todos
   },
-  [actionTypes.ADD_TODO](state: [], action: { id: number, text: string }) {
-    return [ ...state, todo(undefined, action) ]
-  },
-  [actionTypes.TOGGLE_TODO](state: [], action: { id: number }) {
-    return state.map(t => todo(t, action))
+  [actionTypes.FETCH_TODOS_FAILURE](state: {}, action: {}) {
+    return action.error
   }
 }
 
-const todos = makeReducer([], todosHandlers)
+const todos = createReducer([], todosHandlers)
 
 export default todos
