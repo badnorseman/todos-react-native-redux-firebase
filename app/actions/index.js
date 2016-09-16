@@ -5,6 +5,7 @@ import { makeActionCreator } from '../utils/makeActionCreator'
 const Todo = firebaseApp.database().ref()
 
 export function fetchTodos() {
+  authenticate()
   return dispatch => {
     Todo.orderByChild('text').on('value', function (snapshot) {
       let todos = []
@@ -16,12 +17,12 @@ export function fetchTodos() {
         })
       })
       dispatch({
-        type: actionTypes.TODOS_SUCCESS,
+        type: actionTypes.FETCH_TODOS_SUCCESS,
         todos
       })
     }, function (error) {
       dispatch({
-        type: actionTypes.TODOS_FAILURE,
+        type: actionTypes.FETCH_TODOS_FAILURE,
         error
       })
     })
@@ -36,7 +37,7 @@ export function addTodo(text) {
       completed: false
     }).catch(error => {
       dispatch({
-        type: actionTypes.TODOS_FAILURE,
+        type: actionTypes.GET_ERROR,
         error
       })
     })
@@ -44,12 +45,13 @@ export function addTodo(text) {
 }
 
 export function toggleTodo(todo) {
+  authenticate()
   return dispatch => {
     Todo.child(todo.id).update({
       completed: !todo.completed
     }).catch(error => {
       dispatch({
-        type: actionTypes.TODOS_FAILURE,
+        type: actionTypes.GET_ERROR,
         error
       })
     })
@@ -57,10 +59,11 @@ export function toggleTodo(todo) {
 }
 
 export function deleteTodo(id) {
+  authenticate()
   return dispatch => {
     Todo.child(id).remove().catch(error => {
       dispatch({
-        type: actionTypes.TODOS_FAILURE,
+        type: actionTypes.GET_ERROR,
         error
       })
     })
@@ -68,15 +71,10 @@ export function deleteTodo(id) {
 }
 
 function authenticate() {
-  return dispatch => {
-    const auth = firebaseApp.auth()
-    auth.signInAnonymously().catch(error => {
-      dispatch({
-        type: actionTypes.TODOS_FAILURE,
-        error
-      })
-    })
-  }
+  const auth = firebaseApp.auth()
+  auth.signInAnonymously().catch(error => {
+    throw new Error(error)
+  })
 }
 
 export const setVisibilityFilter = makeActionCreator(actionTypes.SET_VISIBILITY_FILTER, 'filter')
