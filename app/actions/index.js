@@ -2,6 +2,8 @@ import firebaseApp from '../firebaseApp'
 import * as actionTypes from '../constants/actionTypes'
 import { makeActionCreator } from '../utils/makeActionCreator'
 
+const instagramConfig = require('../../instagramconfig.json')
+
 const Todo = firebaseApp.database().ref()
 
 export function fetchTodos() {
@@ -71,46 +73,34 @@ export function deleteTodo(id) {
 }
 
 function authorize() {
-  console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-  console.log('authorize')
-  console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-  signInAnonymously()
+  signInWithInstagram()
 }
 
-function signInAnonymously() {
-  firebaseApp.auth().signInAnonymously().then(function (result) {
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    console.log('signInAnonymously result', result)
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-  }).catch(error => {
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    console.log('signInAnonymously error', error)
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    throw new Error(error)
-  })
-}
-
-// function signInWithGithub() {
-//   // https://developer.github.com/v3/oauth/#web-application-flow
-//   const url = 'https://github.com/login/oauth/authorize?client_id=04a71d6ec8cc045fee9a'
-//   const headers = {
-//     'Accept': 'application/json',
-//     'Content-Type': 'application/json'
-//   }
-//   return fetch(url, {
-//     method: 'GET',
-//     headers
-//   }).then(function (result) {
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-//     console.log('signInWithGithub result', result)
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+// function signInAnonymously() {
+//   firebaseApp.auth().signInAnonymously().then(function (result) {
 //     return result
 //   }).catch(error => {
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-//     console.log('signInWithGithub error', error)
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
 //     throw new Error(error)
 //   })
 // }
+
+function signInWithInstagram() {
+  const url = `https://api.instagram.com/oauth/authorize/?client_id=${instagramConfig.clientId}&redirect_uri=my-to-dos.firebaseapp.com&response_type=token`
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+  return fetch(url, {
+    method: 'GET',
+    headers
+  }).then(result => {
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+    console.log('signInWithInstagram status, headers', result.status, result.headers)
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+    return result
+  }).catch(error => {
+    throw new Error(error)
+  })
+}
 
 export const setVisibilityFilter = makeActionCreator(actionTypes.SET_VISIBILITY_FILTER, 'filter')

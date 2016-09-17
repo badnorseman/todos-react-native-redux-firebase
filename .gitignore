@@ -41,6 +41,8 @@ buck-out/
 android/app/libs
 android/keystores/debug.keystore
 
-# firebase
+# Config
 #
 firebaseconfig.json
+githubconfig.json
+instagramconfig.json
