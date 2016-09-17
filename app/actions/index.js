@@ -11,7 +11,7 @@ export function fetchTodos() {
   return dispatch => {
     Todo.orderByChild('text').on('value', function (snapshot) {
       let todos = []
-      snapshot.forEach((child) => {
+      snapshot.forEach(function (child) {
         todos.push({
           id: child.key,
           text: child.val().text,
@@ -85,17 +85,30 @@ function authorize() {
 // }
 
 function signInWithInstagram() {
-  const url = `https://api.instagram.com/oauth/authorize/?client_id=${instagramConfig.clientId}&redirect_uri=my-to-dos.firebaseapp.com&response_type=token`
-  const headers = {
+  const headers = new Headers ({
     'Accept': 'application/json',
     'Content-Type': 'application/json'
-  }
+  })
+  const url = `https://api.instagram.com/oauth/authorize/?client_id=${instagramConfig.clientId}&redirect_uri=my-to-dos.firebaseapp.com&response_type=token`
+
   return fetch(url, {
     method: 'GET',
     headers
   }).then(result => {
+    const cookieInfo = result.headers.get('Set-Cookie')
+    const accessToken = result.headers.get('Content-Length')
     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    console.log('signInWithInstagram status, headers', result.status, result.headers)
+    console.log('cookieInfo/accessToken', cookieInfo, '/', accessToken)
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+    const url = `https://api.instagram.com/v1/users/self/?access_token=${accessToken}`
+    return fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers
+    })
+  }).then(result => {
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+    console.log('result', result)
     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
     return result
   }).catch(error => {
