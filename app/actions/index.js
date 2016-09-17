@@ -5,7 +5,7 @@ import { makeActionCreator } from '../utils/makeActionCreator'
 const Todo = firebaseApp.database().ref()
 
 export function fetchTodos() {
-  authenticate()
+  authorize()
   return dispatch => {
     Todo.orderByChild('text').on('value', function (snapshot) {
       let todos = []
@@ -30,7 +30,7 @@ export function fetchTodos() {
 }
 
 export function addTodo(text) {
-  authenticate()
+  authorize()
   return dispatch => {
     Todo.push({
       text,
@@ -45,7 +45,7 @@ export function addTodo(text) {
 }
 
 export function toggleTodo(todo) {
-  authenticate()
+  authorize()
   return dispatch => {
     Todo.child(todo.id).update({
       completed: !todo.completed
@@ -59,7 +59,7 @@ export function toggleTodo(todo) {
 }
 
 export function deleteTodo(id) {
-  authenticate()
+  authorize()
   return dispatch => {
     Todo.child(id).remove().catch(error => {
       dispatch({
@@ -70,11 +70,47 @@ export function deleteTodo(id) {
   }
 }
 
-function authenticate() {
-  const auth = firebaseApp.auth()
-  auth.signInAnonymously().catch(error => {
+function authorize() {
+  console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+  console.log('authorize')
+  console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+  signInAnonymously()
+}
+
+function signInAnonymously() {
+  firebaseApp.auth().signInAnonymously().then(function (result) {
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+    console.log('signInAnonymously result', result)
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+  }).catch(error => {
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+    console.log('signInAnonymously error', error)
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
     throw new Error(error)
   })
 }
+
+// function signInWithGithub() {
+//   // https://developer.github.com/v3/oauth/#web-application-flow
+//   const url = 'https://github.com/login/oauth/authorize?client_id=04a71d6ec8cc045fee9a'
+//   const headers = {
+//     'Accept': 'application/json',
+//     'Content-Type': 'application/json'
+//   }
+//   return fetch(url, {
+//     method: 'GET',
+//     headers
+//   }).then(function (result) {
+//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+//     console.log('signInWithGithub result', result)
+//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+//     return result
+//   }).catch(error => {
+//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+//     console.log('signInWithGithub error', error)
+//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+//     throw new Error(error)
+//   })
+// }
 
 export const setVisibilityFilter = makeActionCreator(actionTypes.SET_VISIBILITY_FILTER, 'filter')
