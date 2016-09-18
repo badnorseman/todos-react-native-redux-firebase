@@ -15,7 +15,10 @@ import { sortTodos } from '../utils/sortTodos'
 export default class TodoList extends Component {
   static propTypes = {
     navigator: PropTypes.object.isRequired,
-    todos: PropTypes.array.isRequired,
+    todos: PropTypes.oneOfType([
+      PropTypes.object.isRequired,
+      PropTypes.array.isRequired
+    ]),
     fetchTodos: PropTypes.func.isRequired,
     toggleTodo: PropTypes.func.isRequired
   };

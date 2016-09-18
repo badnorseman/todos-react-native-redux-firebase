@@ -1,10 +1,14 @@
+import { Linking } from 'react-native'
+import Firebase from 'firebase'
 import firebaseApp from '../firebaseApp'
 import * as actionTypes from '../constants/actionTypes'
 import { makeActionCreator } from '../utils/makeActionCreator'
 
-const instagramConfig = require('../../instagramconfig.json')
+const githubConfig = require('../../githubconfig.json')
 
 const Todo = firebaseApp.database().ref()
+
+export const setVisibilityFilter = makeActionCreator(actionTypes.SET_VISIBILITY_FILTER, 'filter')
 
 export function fetchTodos() {
   authorize()
@@ -73,47 +77,41 @@ export function deleteTodo(id) {
 }
 
 function authorize() {
-  signInWithInstagram()
+  signInAnonymously() // OK
+  signInWithGithub() // Broken
+  signInWithGithubUrl() // Wrong redirect
 }
 
-// function signInAnonymously() {
-//   firebaseApp.auth().signInAnonymously().then(function (result) {
-//     return result
-//   }).catch(error => {
-//     throw new Error(error)
-//   })
-// }
-
-function signInWithInstagram() {
-  const headers = new Headers ({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-  })
-  const url = `https://api.instagram.com/oauth/authorize/?client_id=${instagramConfig.clientId}&redirect_uri=my-to-dos.firebaseapp.com&response_type=token`
-
-  return fetch(url, {
-    method: 'GET',
-    headers
-  }).then(result => {
-    const cookieInfo = result.headers.get('Set-Cookie')
-    const accessToken = result.headers.get('Content-Length')
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    console.log('cookieInfo/accessToken', cookieInfo, '/', accessToken)
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    const url = `https://api.instagram.com/v1/users/self/?access_token=${accessToken}`
-    return fetch(url, {
-      method: 'GET',
-      credentials: 'include',
-      headers
-    })
-  }).then(result => {
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    console.log('result', result)
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+function signInAnonymously() {
+  firebaseApp.auth().signInAnonymously().then(function (result) {
     return result
   }).catch(error => {
     throw new Error(error)
   })
 }
 
-export const setVisibilityFilter = makeActionCreator(actionTypes.SET_VISIBILITY_FILTER, 'filter')
+function signInWithGithub() {
+  const provider = new Firebase.auth.GithubAuthProvider()
+  firebaseApp.auth().signInWithRedirect(provider)
+  firebaseApp.auth().getRedirectResult().then(result => {
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+    console.log('result', result)
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+  }).catch(error => {
+    throw new Error(error)
+  })
+}
+
+function signInWithGithubUrl() {
+  const url = githubConfig.url+
+    '?client_id='+githubConfig.clientId+
+    // '&redirect_uri='+githubConfig.redirectUri+
+    '&response_type=token'
+  Linking.openURL(url).then(result => {
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+    console.log('result', result)
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+  }).catch(error => {
+    throw new Error(error)
+  })
+}
