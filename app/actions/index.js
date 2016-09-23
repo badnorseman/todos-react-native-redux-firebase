@@ -1,17 +1,16 @@
-// import { Linking } from 'react-native'
-// import Firebase from 'firebase'
+import { Linking } from 'react-native'
 import firebaseApp from '../firebaseApp'
 import * as actionTypes from '../constants/actionTypes'
 import { makeActionCreator } from '../utils/makeActionCreator'
 
-// const githubConfig = require('../../githubconfig.json')
+const githubConfig = require('../../githubconfig.json')
 
 const Todo = firebaseApp.database().ref()
 
 export const setVisibilityFilter = makeActionCreator(actionTypes.SET_VISIBILITY_FILTER, 'filter')
 
 export function fetchTodos() {
-  authorize()
+  signInWithGithubOAuth()
   return dispatch => {
     Todo.orderByChild('text').on('value', function (snapshot) {
       let todos = []
@@ -36,7 +35,7 @@ export function fetchTodos() {
 }
 
 export function addTodo(text) {
-  authorize()
+  signInWithGithubOAuth()
   return dispatch => {
     Todo.push({
       text,
@@ -51,7 +50,7 @@ export function addTodo(text) {
 }
 
 export function toggleTodo(todo) {
-  authorize()
+  signInWithGithubOAuth()
   return dispatch => {
     Todo.child(todo.id).update({
       completed: !todo.completed
@@ -65,7 +64,7 @@ export function toggleTodo(todo) {
 }
 
 export function deleteTodo(id) {
-  authorize()
+  signInWithGithubOAuth()
   return dispatch => {
     Todo.child(id).remove().catch(error => {
       dispatch({
@@ -76,67 +75,17 @@ export function deleteTodo(id) {
   }
 }
 
-function authorize() {
-  signInAnonymously()
-}
-
-// Works but we need to implement privacy for user data
-function signInAnonymously() {
-  firebaseApp.auth().signInAnonymously().then(function (result) {
-    return result
+function signInWithGithubOAuth() {
+  const url = githubConfig.url+
+    '?client_id='+githubConfig.clientId+
+    '&redirect_uri='+githubConfig.redirectUri+
+    '&response_type=token'
+  console.log('url', url)
+  Linking.openURL(url).then(result => {
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+    console.log('result', result)
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
   }).catch(error => {
     throw new Error(error)
   })
 }
-
-// Only works with Firebase version 2x
-// function signInWithGithub() {
-//   const provider = new Firebase.auth.GithubAuthProvider()
-//   firebaseApp.auth().signInWithRedirect(provider)
-//   firebaseApp.auth().getRedirectResult().then(result => {
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-//     console.log('result', result)
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-//   }).catch(error => {
-//     throw new Error(error)
-//   })
-// }
-
-// Require OAuth plugin to retrieve access token
-// function signInWithGithubOAuth() {
-//   const accessToken = 'missing'
-//   const credential = new firebase.auth.GithubAuthProvider.credential(accessToken)
-//   firebaseApp.auth().signInWithCredential(credential).then(result => {
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-//     console.log('result', result)
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-//   }).catch(error => {
-//     throw new Error(error)
-//   })
-// }
-
-// Return login html and redirects to Firebase Project
-// function signInWithGithubUrl() {
-//   const url = githubConfig.url+'?scope=user:email&client_id='+githubConfig.clientId+
-//     '&response_type=token'
-//   fetch(url).then(result => {
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-//     console.log('result', result)
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-//   }).catch(error => {
-//     throw new Error(error)
-//   })
-// }
-
-// Redirects to Firebase Project
-// function signInWithGithubAndLinking() {
-//   const url = githubConfig.url+'?scope=user:email&client_id='+githubConfig.clientId+
-//     '&response_type=token'
-//   Linking.openURL(url).then(result => {
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-//     console.log('result', result)
-//     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-//   }).catch(error => {
-//     throw new Error(error)
-//   })
-// }
