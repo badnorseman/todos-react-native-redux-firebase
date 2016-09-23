@@ -80,7 +80,9 @@ function signInWithGithubOAuth() {
     '?client_id='+githubConfig.clientId+
     '&redirect_uri='+githubConfig.redirectUri+
     '&response_type=token'
+  console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
   console.log('url', url)
+  console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
   Linking.openURL(url).then(result => {
     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
     console.log('result', result)
