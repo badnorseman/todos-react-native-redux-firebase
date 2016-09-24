@@ -1,4 +1,8 @@
 import { Linking } from 'react-native'
+import {
+  getItemFromLocalStorage,
+  setItemToLocalStorage
+} from './localStorage'
 
 const githubConfig = require('../../githubconfig.json')
 
@@ -29,21 +33,31 @@ function fetchTokenFromGithub(code) {
 
 function handleUrl(event) {
   const code = event.url.slice(event.url.lastIndexOf('=') + 1)
-  fetchTokenFromGithub(code).done(token => {
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    console.log('token', token)
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-  })
+
+  if (code) {
+    fetchTokenFromGithub(code)
+    .then(token => setItemToLocalStorage({ token }))
+    .then(() => getItemFromLocalStorage())
+    .then(item => {
+      console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+      console.log('Item', item)
+      console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+    })
+    .catch(error => {
+      throw new Error(error)
+    })
+  }
 
   Linking.removeEventListener('url', handleUrl)
 }
 
 export default function signInWithGithub() {
+  Linking.addEventListener('url', handleUrl)
+
   const request = githubConfig.url+
     'authorize?client_id='+githubConfig.clientId+
     '&redirect_uri='+githubConfig.redirectUri
 
-  Linking.addEventListener('url', handleUrl)
   Linking.openURL(request).catch(error => {
     throw new Error(error)
   })
