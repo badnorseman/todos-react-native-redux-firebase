@@ -5,7 +5,7 @@ const STORAGE_KEY = '@TodosReduxFirebase'
 export async function getItemFromLocalStorage() {
   try {
     const item = await AsyncStorage.getItem(STORAGE_KEY)
-    return item
+    return JSON.parse(item)
   } catch (error) {
     throw new Error(error)
   }
