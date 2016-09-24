@@ -2,7 +2,7 @@ import { Linking } from 'react-native'
 
 const githubConfig = require('../../githubconfig.json')
 
-function getTokenFromGithub(code) {
+function fetchTokenFromGithub(code) {
   const request = new Request(
     githubConfig.url+'access_token', {
       method: 'POST',
@@ -29,7 +29,7 @@ function getTokenFromGithub(code) {
 
 function handleUrl(event) {
   const code = event.url.slice(event.url.lastIndexOf('=') + 1)
-  getTokenFromGithub(code).done(token => {
+  fetchTokenFromGithub(code).done(token => {
     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
     console.log('token', token)
     console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
