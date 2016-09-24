@@ -1,16 +1,14 @@
-import { Linking } from 'react-native'
 import firebaseApp from '../firebaseApp'
 import * as actionTypes from '../constants/actionTypes'
 import { makeActionCreator } from '../utils/makeActionCreator'
-
-const githubConfig = require('../../githubconfig.json')
+import signInWithGithub from './signInWithGithub'
 
 const Todo = firebaseApp.database().ref()
 
 export const setVisibilityFilter = makeActionCreator(actionTypes.SET_VISIBILITY_FILTER, 'filter')
 
 export function fetchTodos() {
-  signInWithGithubOAuth()
+  signInWithGithub()
   return dispatch => {
     Todo.orderByChild('text').on('value', function (snapshot) {
       let todos = []
@@ -35,7 +33,7 @@ export function fetchTodos() {
 }
 
 export function addTodo(text) {
-  signInWithGithubOAuth()
+  signInWithGithub()
   return dispatch => {
     Todo.push({
       text,
@@ -50,7 +48,7 @@ export function addTodo(text) {
 }
 
 export function toggleTodo(todo) {
-  signInWithGithubOAuth()
+  signInWithGithub()
   return dispatch => {
     Todo.child(todo.id).update({
       completed: !todo.completed
@@ -64,7 +62,7 @@ export function toggleTodo(todo) {
 }
 
 export function deleteTodo(id) {
-  signInWithGithubOAuth()
+  signInWithGithub()
   return dispatch => {
     Todo.child(id).remove().catch(error => {
       dispatch({
@@ -73,21 +71,4 @@ export function deleteTodo(id) {
       })
     })
   }
-}
-
-function signInWithGithubOAuth() {
-  const url = githubConfig.url+
-    '?client_id='+githubConfig.clientId+
-    '&redirect_uri='+githubConfig.redirectUri+
-    '&response_type=token'
-  console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-  console.log('url', url)
-  console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-  Linking.openURL(url).then(result => {
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    console.log('result', result)
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-  }).catch(error => {
-    throw new Error(error)
-  })
 }
