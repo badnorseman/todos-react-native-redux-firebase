@@ -2,18 +2,10 @@ import { AsyncStorage } from 'react-native'
 
 const STORAGE_KEY = '@TodosReduxFirebase'
 
-export async function getItemFromLocalStorage(item) {
+export async function getItemFromLocalStorage() {
   try {
-    const value = await AsyncStorage.getItem(STORAGE_KEY)
-    if (value && value[item]) {
-      console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-      console.log('Found', value)
-      console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    } else {
-      console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-      console.log('Not found', value)
-      console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    }
+    const item = await AsyncStorage.getItem(STORAGE_KEY)
+    return item
   } catch (error) {
     throw new Error(error)
   }
@@ -21,8 +13,7 @@ export async function getItemFromLocalStorage(item) {
 
 export async function setItemToLocalStorage(item) {
   try {
-    await AsyncStorage.setItem(
-      STORAGE_KEY,
+    await AsyncStorage.setItem(STORAGE_KEY,
       JSON.stringify(item)
     )
   } catch (error) {
