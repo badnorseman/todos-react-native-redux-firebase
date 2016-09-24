@@ -37,12 +37,6 @@ function handleUrl(event) {
   if (code) {
     fetchTokenFromGithub(code)
     .then(token => setItemToLocalStorage({ token }))
-    .then(() => getItemFromLocalStorage())
-    .then(item => {
-      console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-      console.log('Item', item)
-      console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
-    })
     .catch(error => {
       throw new Error(error)
     })
@@ -52,13 +46,19 @@ function handleUrl(event) {
 }
 
 export default function signInWithGithub() {
+  getItemFromLocalStorage().then(item => {
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+    console.log('Item', item)
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+  })
+
   Linking.addEventListener('url', handleUrl)
 
-  const request = githubConfig.url+
+  const url = githubConfig.url+
     'authorize?client_id='+githubConfig.clientId+
     '&redirect_uri='+githubConfig.redirectUri
 
-  Linking.openURL(request).catch(error => {
+  Linking.openURL(url).catch(error => {
     throw new Error(error)
   })
 }
