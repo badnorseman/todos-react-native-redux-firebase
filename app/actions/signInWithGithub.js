@@ -8,7 +8,7 @@ import firebaseApp from '../firebaseApp'
 
 const githubConfig = require('../../githubconfig.json')
 
-function fetchTokenFromGithub(code) {
+async function fetchTokenFromGithub(code) {
   const request = new Request(
     githubConfig.url+'access_token', {
       method: 'POST',
@@ -24,13 +24,13 @@ function fetchTokenFromGithub(code) {
     }
   )
 
-  return fetch(request)
-  .then(result => result.json())
-  .then(resultJson => resultJson.access_token)
-  .then(token => setItemToLocalStorage({ token }))
-  .catch(error => {
+  try {
+    let result = await fetch(request)
+    let resultJson = await result.json()
+    return resultJson.access_token
+  } catch (error) {
     throw new Error(error)
-  })
+  }
 }
 
 export default function signInWithGithub() {
@@ -45,7 +45,12 @@ export default function signInWithGithub() {
     const resultState = event.url.slice(event.url.lastIndexOf('=') + 1)
 
     if (code && requestState === resultState) {
-      fetchTokenFromGithub(code).catch(error => {
+      fetchTokenFromGithub(code)
+      .then(token => setItemToLocalStorage({ token }))
+      .then(() => getItemFromLocalStorage())
+      .then(token => new Firebase.auth.GithubAuthProvider.credential(token.token))
+      .then(credential => firebaseApp.auth().signInWithCredential(credential))
+      .catch(error => {
         throw new Error(error)
       })
     }
@@ -57,12 +62,5 @@ export default function signInWithGithub() {
 
   Linking.openURL(url).catch(error => {
     throw new Error(error)
-  })
-
-  getItemFromLocalStorage().then(item => {
-    const credential = new Firebase.auth.GithubAuthProvider.credential(item.token)
-    firebaseApp.auth().signInWithCredential(credential).catch(error => {
-      throw new Error(error)
-    })
   })
 }
